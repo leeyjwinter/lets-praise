@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>칭찬합시다!</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🎈 칭찬합시다! 🎈</h1>
+        <p>따뜻한 칭찬으로 세상을 더 밝게 만들어요!</p>
+        
+        <div class="search-section">
+            <div class="search-group">
+                <label for="nameSearch">이름을 검색해보세요:</label>
+                <input type="text" id="nameSearch" placeholder="예: 김민수">
+            </div>
+            <button id="searchBtn">칭찬 메시지 찾기 🔍</button>
+        </div>
+        
+        <div class="balloons-container" id="balloonsContainer">
+        </div>
+        
+        <!-- 검색 결과 모달 -->
+        <div class="modal" id="searchModal">
+            <div class="modal-content">
+                <span class="close" id="searchClose">&times;</span>
+                <h2 id="searchResultTitle"></h2>
+                <p id="searchResultCount"></p>
+                <button id="viewMessagesBtn" class="view-btn">보기 📖</button>
+            </div>
+        </div>
+        
+        <!-- 메시지 보기 모달 -->
+        <div class="modal" id="messagesModal">
+            <div class="modal-content messages-content">
+                <span class="close" id="messagesClose">&times;</span>
+                <h2 id="messagesTitle"></h2>
+                <div class="message-navigation">
+                    <button id="prevBtn" class="nav-btn">← 이전</button>
+                    <span id="messageCounter"></span>
+                    <button id="nextBtn" class="nav-btn">다음 →</button>
+                </div>
+                <div class="message-display">
+                    <p id="currentMessage"></p>
+                </div>
+                <div class="hearts">💖 💝 💕</div>
+            </div>
+        </div>
+        
+        <!-- 기존 칭찬 상세 모달 -->
+        <div class="modal" id="praiseModal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="modalName"></h2>
+                <p id="modalPraise"></p>
+                <div class="hearts">💖 💝 💕</div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/script.js"></script>
+</body>
+</html>
