@@ -21,9 +21,8 @@ class MemoryTimeline {
             'december': '12월'
         };
 
-        // 실제 존재하는 파일들 정의
+        // ✅ 실제 파일 구조에 맞게 수정
         this.actualFiles = {
-            // ...existing code...
             february: [
                 '미디어 (5).jpg',
                 'image-2025-3-14_11-42-11.png',
@@ -43,15 +42,9 @@ class MemoryTimeline {
                 '20250321_150826.jpg'
             ],
             april: [
-                'image-2025-6-18_19-44-35 (1).png',
-                'image-2025-6-18_19-44-35 (2).png',
-                'image-2025-6-18_19-44-35 (3).png',
                 'image-2025-6-18_19-44-35.png'
             ],
             may: [
-                'image-2025-6-18_19-44-10 (1).png',
-                'image-2025-6-18_19-44-10 (2).png',
-                'image-2025-6-18_19-44-10 (3).png',
                 'image-2025-6-18_19-44-10.png'
             ],
             june: [
@@ -178,7 +171,7 @@ class MemoryTimeline {
     }
 
     init() {
-        this.updateMonthTitles(); // 🆕 제목 업데이트 추가
+        this.updateMonthTitles();
         this.hideEmptyMonths();
         this.setupScrollAnimation();
         this.loadAllPhotos();
@@ -189,7 +182,6 @@ class MemoryTimeline {
         }, 500);
     }
 
-    // 🆕 HTML의 월 제목을 동적으로 업데이트
     updateMonthTitles() {
         console.log('📝 월별 제목 업데이트 중...');
         
@@ -276,15 +268,17 @@ class MemoryTimeline {
 
         console.log(`🔄 ${this.monthNames[month]} 사진 로드 중... (${files.length}개)`);
 
-        // 사진만 생성 (description 제거됨)
+        // 🚫 디버깅 코드 제거 - 더 이상 필요 없음
         const photosHtml = files.map((filename, index) => {
             const caption = this.generateCaption(filename, index + 1, month);
+            const encodedFilename = encodeURIComponent(filename);
+            
             return `
                 <div class="photo-item" data-month="${month}" data-photo="${filename}">
-                    <img src="images/${month}/${encodeURIComponent(filename)}" 
+                    <img src="images/${month}/${encodedFilename}" 
                          alt="${caption}" 
                          loading="lazy"
-                         onerror="this.parentElement.style.display='none'">
+                         onerror="console.error('이미지 로드 실패:', '${encodedFilename}'); this.parentElement.style.display='none'">
                     <div class="photo-overlay">
                         <div class="photo-caption">${caption}</div>
                     </div>
@@ -328,9 +322,9 @@ class MemoryTimeline {
             return `${monthNumber}월 안전체험관 활동 ${index}`;
         } else if (lowerFilename.includes('image-2025-9')) {
             return `${monthNumber}월 컬쳐위크 ${index}`;
-        } else if (lowerFilename.includes('image-2025-6-18_19-44-35')) {
+        } else if (month === 'april') {
             return `${monthNumber}월 People Skill 워크샵 ${index}`;
-        } else if (lowerFilename.includes('image-2025-6-18_19-44-10')) {
+        } else if (month === 'may') {
             return `${monthNumber}월 담당 REINVENT DAY ${index}`;
         } else {
             return `${monthNumber}월 추억 ${index}`;
