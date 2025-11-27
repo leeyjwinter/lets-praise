@@ -21,7 +21,7 @@ class MemoryTimeline {
             'december': '12월'
         };
 
-        // ✅ 실제 파일 구조에 맞게 수정
+        // ✅ 실제 파일 구조에 맞게 수정 (12월 제외)
         this.actualFiles = {
             february: [
                 '미디어 (5).jpg',
@@ -165,6 +165,7 @@ class MemoryTimeline {
             november: [
                 '미디어 (3).jpeg'
             ]
+            // 🚫 12월 제거 - 배너로 처리
         };
 
         this.init();
@@ -179,7 +180,35 @@ class MemoryTimeline {
         
         setTimeout(() => {
             this.animateTimelineItems();
+            this.createGroupPhotoBanner(); // 🔄 맨 밑으로 이동
         }, 500);
+    }
+
+    // 🔄 단체사진 배너 생성 (맨 밑에 추가)
+    createGroupPhotoBanner() {
+        const timelineContainer = document.querySelector('.timeline-container');
+        
+        // 배너 HTML 생성
+        const bannerHtml = `
+            <div class="group-photo-banner">
+                <div class="banner-content">
+                    <h2 class="banner-title">2025년 우리들의 추억</h2>
+                    <p class="banner-subtitle">함께한 모든 순간들이 소중한 기억이 되었습니다</p>
+                    <div class="group-photo-container">
+                        <img src="../images/december/together.jpeg" 
+                             alt="2025년 단체사진" 
+                             class="group-photo"
+                             onclick="this.classList.toggle('enlarged')">
+                    </div>
+                    <p class="banner-message">고생 많으셨고, 내년에도 함께 좋은 추억 만들어요! 🎉</p>
+                </div>
+            </div>
+        `;
+        
+        // 🔄 타임라인 맨 밑에 배너 추가
+        timelineContainer.insertAdjacentHTML('beforeend', bannerHtml);
+        
+        console.log('🖼️ 단체사진 배너 생성 완료! (맨 밑)');
     }
 
     updateMonthTitles() {
@@ -268,7 +297,6 @@ class MemoryTimeline {
 
         console.log(`🔄 ${this.monthNames[month]} 사진 로드 중... (${files.length}개)`);
 
-        // 🚫 디버깅 코드 제거 - 더 이상 필요 없음
         const photosHtml = files.map((filename, index) => {
             const caption = this.generateCaption(filename, index + 1, month);
             const encodedFilename = encodeURIComponent(filename);
