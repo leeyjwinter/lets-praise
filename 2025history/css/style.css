@@ -316,3 +316,34 @@ body::before {
     font-style: italic;
 }
 
+/* 월별 설명 스타일 추가 */
+.month-description {
+    margin-bottom: 25px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.month-description p {
+    margin: 0;
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    font-style: italic;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .month-description {
+        margin-bottom: 20px;
+        padding: 15px;
+    }
+    
+    .month-description p {
+        font-size: 1em;
+    }
+}
+

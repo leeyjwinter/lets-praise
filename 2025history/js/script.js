@@ -5,23 +5,25 @@ class MemoryTimeline {
             'july', 'august', 'september', 'october', 'november', 'december'
         ];
         
+        // 🎯 monthNames에 활동명 포함
         this.monthNames = {
             'january': '1월',
-            'february': '2월', 
-            'march': '3월',
-            'april': '4월',
-            'may': '5월',
-            'june': '6월',
-            'july': '7월',
-            'august': '8월',
-            'september': '9월',
-            'october': '10월',
-            'november': '11월',
+            'february': '2월 - REINVENT DAY (보드게임, 볼링)', 
+            'march': '3월 - REINVENT DAY (DX 활동, UD 체험실, 보안엑스포)',
+            'april': '4월 - REINVENT DAY (People Skill, 일등조직만들기 워크샵)',
+            'may': '5월 - 담당 REINVENT DAY',
+            'june': '6월 - REINVENT DAY (메타버스 엑스포)',
+            'july': '7월 - REINVENT DAY (Life.zip 집들2)',
+            'august': '8월 - REINVENT DAY (안전체험관 방문)',
+            'september': '9월 - REINVENT DAY (컬쳐위크)',
+            'october': '10월 - 팀 야유회 (아쿠아리움, 방탈출)',
+            'november': '11월 - 한 해 마무리 활동',
             'december': '12월'
         };
 
-        // 실제 존재하는 파일들 정의 (완전 업데이트)
+        // 실제 존재하는 파일들 정의
         this.actualFiles = {
+            // ...existing code...
             february: [
                 '미디어 (5).jpg',
                 'image-2025-3-14_11-42-11.png',
@@ -85,7 +87,6 @@ class MemoryTimeline {
                 'image-2025-9-8_11-0-24.png'
             ],
             october: [
-                // JPG 파일들만 포함 (HEIC는 브라우저에서 표시 안됨)
                 'IMG_4431.JPG',
                 'IMG_4432.JPG',
                 'IMG_4433.JPG',
@@ -167,6 +168,9 @@ class MemoryTimeline {
                 'IMG_4525.JPG',
                 'IMG_4526.JPG',
                 'IMG_4527.JPG'
+            ],
+            november: [
+                '미디어 (3).jpeg'
             ]
         };
 
@@ -174,6 +178,8 @@ class MemoryTimeline {
     }
 
     init() {
+        this.updateMonthTitles(); // 🆕 제목 업데이트 추가
+        this.hideEmptyMonths();
         this.setupScrollAnimation();
         this.loadAllPhotos();
         this.setupModal();
@@ -181,6 +187,39 @@ class MemoryTimeline {
         setTimeout(() => {
             this.animateTimelineItems();
         }, 500);
+    }
+
+    // 🆕 HTML의 월 제목을 동적으로 업데이트
+    updateMonthTitles() {
+        console.log('📝 월별 제목 업데이트 중...');
+        
+        this.months.forEach(month => {
+            const timelineItem = document.querySelector(`[data-month="${month}"]`);
+            if (timelineItem) {
+                const h2Element = timelineItem.querySelector('h2');
+                if (h2Element) {
+                    h2Element.textContent = this.monthNames[month];
+                }
+            }
+        });
+        
+        console.log('✅ 월별 제목 업데이트 완료!');
+    }
+
+    hideEmptyMonths() {
+        console.log('🔍 사진이 없는 달 숨기는 중...');
+        
+        this.months.forEach(month => {
+            const files = this.actualFiles[month] || [];
+            const timelineItem = document.querySelector(`[data-month="${month}"]`);
+            
+            if (files.length === 0 && timelineItem) {
+                timelineItem.style.display = 'none';
+                console.log(`🚫 ${this.monthNames[month]} 숨김 (사진 없음)`);
+            } else if (files.length > 0 && timelineItem) {
+                console.log(`✅ ${this.monthNames[month]} 표시 (${files.length}개 사진)`);
+            }
+        });
     }
 
     setupScrollAnimation() {
@@ -195,14 +234,14 @@ class MemoryTimeline {
             rootMargin: '0px 0px -50px 0px'
         });
 
-        document.querySelectorAll('.timeline-item').forEach(item => {
+        document.querySelectorAll('.timeline-item:not([style*="display: none"])').forEach(item => {
             observer.observe(item);
         });
     }
 
     animateTimelineItems() {
-        const items = document.querySelectorAll('.timeline-item');
-        items.forEach((item, index) => {
+        const visibleItems = document.querySelectorAll('.timeline-item:not([style*="display: none"])');
+        visibleItems.forEach((item, index) => {
             setTimeout(() => {
                 item.classList.add('visible');
             }, index * 200);
@@ -211,7 +250,15 @@ class MemoryTimeline {
 
     async loadAllPhotos() {
         console.log('📸 월별 사진 로드 시작...');
-        for (const month of this.months) {
+        
+        const monthsWithPhotos = this.months.filter(month => {
+            const files = this.actualFiles[month] || [];
+            return files.length > 0;
+        });
+        
+        console.log(`📂 사진이 있는 달: ${monthsWithPhotos.length}개월`);
+        
+        for (const month of monthsWithPhotos) {
             await this.loadPhotosForMonth(month);
         }
         console.log('✅ 모든 사진 로드 완료!');
@@ -221,25 +268,17 @@ class MemoryTimeline {
         const gallery = document.getElementById(`gallery-${month}`);
         if (!gallery) return;
 
-        // 해당 월에 실제 파일이 있는지 확인
         const files = this.actualFiles[month] || [];
         
         if (files.length === 0) {
-            gallery.innerHTML = `
-                <div class="no-photos">
-                    아직 ${this.monthNames[month]} 사진이 없어요 📷<br>
-                    <small>images/${month}/ 폴더에 사진을 추가해보세요!</small>
-                </div>
-            `;
-            console.log(`📂 ${this.monthNames[month]}: 사진 없음`);
             return;
         }
 
         console.log(`🔄 ${this.monthNames[month]} 사진 로드 중... (${files.length}개)`);
 
-        // 사진 갤러리 생성
+        // 사진만 생성 (description 제거됨)
         const photosHtml = files.map((filename, index) => {
-            const caption = this.generateCaption(filename, index + 1, this.monthNames[month]);
+            const caption = this.generateCaption(filename, index + 1, month);
             return `
                 <div class="photo-item" data-month="${month}" data-photo="${filename}">
                     <img src="images/${month}/${encodeURIComponent(filename)}" 
@@ -255,7 +294,6 @@ class MemoryTimeline {
 
         gallery.innerHTML = photosHtml;
 
-        // 사진 클릭 이벤트 설정
         gallery.querySelectorAll('.photo-item').forEach(item => {
             item.addEventListener('click', () => this.openModal(item));
         });
@@ -263,42 +301,45 @@ class MemoryTimeline {
         console.log(`✅ ${this.monthNames[month]}: ${files.length}개 사진 로드 완료!`);
     }
 
-    // 파일명을 기반으로 적절한 캡션 생성 (업데이트됨)
-    generateCaption(filename, index, monthName) {
+    generateCaption(filename, index, month) {
         const lowerFilename = filename.toLowerCase();
+        const monthNumber = this.months.indexOf(month) + 1;
         
-        // 특별한 키워드가 있는 경우 맞춤 캡션
         if (lowerFilename.includes('메타버스')) {
-            return `${monthName} 메타버스 엑스포 ${index}`;
+            return `${monthNumber}월 메타버스 엑스포 ${index}`;
         } else if (lowerFilename.includes('shared')) {
-            return `${monthName} 함께한 순간 ${index}`;
+            return `${monthNumber}월 함께한 순간 ${index}`;
         } else if (lowerFilename.includes('july')) {
-            return `${monthName} 여름 추억 ${index}`;
+            return `${monthNumber}월 Life.zip 집들2 ${index}`;
         } else if (lowerFilename.includes('미디어')) {
-            return `${monthName} 미디어 활동`;
+            if (month === 'november') {
+                return `${monthNumber}월 마무리 활동`;
+            }
+            return `${monthNumber}월 미디어 활동`;
         } else if (lowerFilename.includes('2025032')) {
-            return `${monthName} 팀 활동 ${index}`;
+            return `${monthNumber}월 DX활동 & 보안엑스포 ${index}`;
         } else if (lowerFilename.includes('20250825')) {
-            return `${monthName} 여름 마무리 ${index}`;
+            return `${monthNumber}월 안전체험관 방문 ${index}`;
         } else if (lowerFilename.includes('img_4')) {
-            return `${monthName} 가을 추억 ${index}`;
+            return `${monthNumber}월 팀 야유회 ${index}`;
         } else if (lowerFilename.includes('re1')) {
-            return `${monthName} 특별한 순간`;
+            return `${monthNumber}월 안전체험관 특별 체험`;
         } else if (lowerFilename.includes('image-2025-8')) {
-            return `${monthName} 프로젝트 활동 ${index}`;
+            return `${monthNumber}월 안전체험관 활동 ${index}`;
         } else if (lowerFilename.includes('image-2025-9')) {
-            return `${monthName} 가을 시작 ${index}`;
-        } else if (lowerFilename.includes('image-2025')) {
-            return `${monthName} 프로젝트 활동 ${index}`;
+            return `${monthNumber}월 컬쳐위크 ${index}`;
+        } else if (lowerFilename.includes('image-2025-6-18_19-44-35')) {
+            return `${monthNumber}월 People Skill 워크샵 ${index}`;
+        } else if (lowerFilename.includes('image-2025-6-18_19-44-10')) {
+            return `${monthNumber}월 담당 REINVENT DAY ${index}`;
         } else {
-            return `${monthName} 추억 ${index}`;
+            return `${monthNumber}월 추억 ${index}`;
         }
     }
 
     setupModal() {
         const modal = document.getElementById('imageModal');
         
-        // 모달 HTML이 비어있다면 추가
         if (!modal.querySelector('.modal-content')) {
             modal.innerHTML = `
                 <div class="modal-content">
@@ -348,7 +389,6 @@ class MemoryTimeline {
     }
 }
 
-// 페이지 로드 시 실행
 document.addEventListener('DOMContentLoaded', () => {
     new MemoryTimeline();
 });
